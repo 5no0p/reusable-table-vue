@@ -77,8 +77,19 @@ const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1)
                 @click="sortBy(key)"
               class="px-6 py-3 text-start text-xs font-medium"
               >
+              <div class="flex items-center justify-start gap-1">
+
                 {{ capitalize(key) }}
-                <span v-if="sortConfig.key === key" class="arrow" :class="sortConfig.direction"></span>
+              <span class="flex h-4 w-4 shrink-0 items-center justify-center" :class="{ invisible: sortConfig.key !== key }">
+
+                <svg  class="arrow" viewBox="0 0 24 24" width="16" height="16">
+                  <path v-if="sortConfig.direction === 'asc'" fill="currentColor" d="M7 14l5-5 5 5H7z" />
+                  <path v-else-if="sortConfig.direction === 'desc'" fill="currentColor" d="M7 10l5 5 5-5H7z" />
+                  <path v-else fill="currentColor" d="M7 10l5-5 5 5H7zM7 14l5 5 5-5H7z" />
+                </svg>
+              </span>  
+            
+              </div>
               </th> 
             </tr>
           </thead>
