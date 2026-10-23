@@ -40,14 +40,14 @@ const filteredData = computed(() => {
   }
 
   // Sort the data based on the sort configuration
-  if (sortConfig.value.key) {
+  const { key, direction } = sortConfig.value
+  if (key) {
+    const order = direction === 'asc'? 1 : -1
     data = [...data].sort((a, b) => {
-      const aValue = a[sortConfig.value.key]
-      const bValue = b[sortConfig.value.key]
+      const aValue = a[key]
+      const bValue = b[key]
 
-      if (aValue < bValue) return sortConfig.value.direction === 'asc' ? -1 : 1
-      if (aValue > bValue) return sortConfig.value.direction === 'asc' ? 1 : -1
-      return 0
+      return (aValue === bValue ? 0 : aValue > bValue ? 1 : -1) * order
     })
   }
 
@@ -57,21 +57,21 @@ const filteredData = computed(() => {
 </script>
 
 <template>
- <div class="min-w-full">
-      <div class="border border-table-line overflow-x-auto [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-none [&::-webkit-scrollbar-track]:bg-scrollbar-track [&::-webkit-scrollbar-thumb]:bg-scrollbar-thumb">
-        <table class="min-w-full divide-y divide-table-line">
+ <div class="min-w-full mx-60 mt-4">
+      <div class="border">
+        <table class="min-w-full divide-y">
           <thead>
             <tr>
-              <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-muted-foreground-1 uppercase" @click="sortConfig.key = 'id'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">ID</th>
-              <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-muted-foreground-1 uppercase" @click="sortConfig.key = 'name'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">Name</th>
-              <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-muted-foreground-1 uppercase" @click="sortConfig.key = 'age'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">Age</th>
+              <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase" @click="sortConfig.key = 'id'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">ID</th>
+              <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase" @click="sortConfig.key = 'name'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">Name</th>
+              <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase" @click="sortConfig.key = 'age'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">Age</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-table-line">
+          <tbody class="divide-y">
             <tr v-for="row in filteredData" :key="row.id" @click="selectedRow = row" :class="{ selected: selectedRow && selectedRow.id === row.id }">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{{ row.id }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{{ row.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{{ row.age }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ row.id }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ row.name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ row.age }}</td>
             </tr>
           </tbody>
         </table>
