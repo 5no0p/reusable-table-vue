@@ -34,8 +34,7 @@ const filteredData = computed(() => {
   // Filter the data based on the search query
   if (q) {
     data = data.filter(row =>
-      Object.values(row).some(value =>
-        String(value).toLowerCase().includes(q.toLowerCase())
+      props.columns.some(col => String(row[col] ?? '').toLowerCase().includes(q)
       )
     )
   }
