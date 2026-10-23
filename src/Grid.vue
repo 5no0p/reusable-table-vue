@@ -2,9 +2,9 @@
 import { ref, computed, watch } from 'vue';
 
 const props = defineProps({
-    data: Array,
-    columns: Array,
-    filterKey: String
+    data: {type: Array, default: () => []},
+    columns: {type: Array, default: () => []},
+    filterKey: {type: String, default: ''}
 })
 
 // Define the sort variable
@@ -75,13 +75,12 @@ const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1)
             <tr class="bg-green-700">
               <th v-for="key in columns"
                 @click="sortBy(key)"
-              class="px-6 py-3 text-start text-xs font-medium"
+              class="px-6 py-3 text-start text-xs font-medium cursor-pointer select-none"
               >
               <div class="flex items-center justify-start gap-1">
 
                 {{ capitalize(key) }}
               <span class="flex h-4 w-4 shrink-0 items-center justify-center" :class="{ invisible: sortConfig.key !== key }">
-
                 <svg  class="arrow" viewBox="0 0 24 24" width="16" height="16">
                   <path v-if="sortConfig.direction === 'asc'" fill="currentColor" d="M7 14l5-5 5 5H7z" />
                   <path v-else-if="sortConfig.direction === 'desc'" fill="currentColor" d="M7 10l5 5 5-5H7z" />
