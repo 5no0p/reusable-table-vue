@@ -54,27 +54,42 @@ const filteredData = computed(() => {
   return data
 })
 
+// Define function for sort in the template
+function sortBy(sortKey){
+  const { key, direction } = sortConfig.value
+  sortConfig.value = key === sortKey
+    ? { key: sortKey, direction: direction === 'asc' ? 'desc' : 'asc' }
+    : { key: sortKey, direction: 'asc' }
+}
+
+// Define function for displaying the name in the template
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1)
+
 </script>
 
 <template>
  <div class="min-w-full mx-60 mt-4">
       <div class="border">
-        <table class="min-w-full divide-y">
+        <table v-if="filteredData.length" class="min-w-full divide-y">
           <thead>
-            <tr>
-              <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase" @click="sortConfig.key = 'id'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">ID</th>
-              <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase" @click="sortConfig.key = 'name'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">Name</th>
-              <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase" @click="sortConfig.key = 'age'; sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc'">Age</th>
+            <tr class="bg-green-700">
+              <th v-for="key in columns"
+                @click="sortBy(key)"
+              class="px-6 py-3 text-start text-xs font-medium"
+              >
+                {{ capitalize(key) }}
+                <span v-if="sortConfig.key === key" class="arrow" :class="sortConfig.direction"></span>
+              </th> 
             </tr>
           </thead>
           <tbody class="divide-y">
-            <tr v-for="row in filteredData" :key="row.id" @click="selectedRow = row" :class="{ selected: selectedRow && selectedRow.id === row.id }">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ row.id }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ row.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ row.age }}</td>
+            <tr v-for="(entry, i) in filteredData" :key="i" @click="selectedRow = entry.id" :class="{ selected: selectedRow && selectedRow.id === row.id }">
+            
+              <td v-for="key in columns" :key="key" class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ entry[key] }}</td>
             </tr>
           </tbody>
         </table>
+        <p v-else>No match founds.</p>
       </div>
     </div>
 </template>
